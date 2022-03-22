@@ -1,0 +1,78 @@
+﻿
+@{
+    ViewData["Title"] = "Home page";
+}
+<div class="text-center ">
+    <div class=" row">
+        <div class=" col-4 offset-5">
+            <div class=" form-group">
+                <lable>Select Country</lable>
+                <select id="ddlcountry" class="form-control">
+                    <option value="">Select</option>
+                </select>
+            </div>
+            <div class=" form-group">
+                <lable>Select State</lable>
+                <select id="ddlstate" class="form-control">
+                    <option value="">Select</option>
+                </select>
+            </div>
+            <div class=" form-group">
+                <lable>Select City</lable>
+                <select id="ddlcity" class="form-control">
+                    <option value="">Select</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $(Document).ready(function () {
+        getcountries()
+
+        $("#ddlcountry").change(function () {
+            var id = $("#ddlcountry").val();
+            getstates(id);
+        })
+        $("#ddlstate").change(function () {
+            var id = $("#ddlstate").val();
+            console.log("State Id", id);
+            GetCities(id);
+
+        })
+    })
+    function getcountries() {
+
+        $.  get('@Url.Action("GetCountries","Home")', function (result) {
+           // console.log(result)
+            $.each(result, function (index, item) {
+                console.log(item)
+                $("#ddlcountry").append("<option value = " + item.id + ">" + item.countryName+ "</option > ")
+
+            })
+        })
+    }
+    function getstates(countryid) {
+        $.get('@Url.Action("GetStates","Home")', { id: countryid }, function (result) {
+            $.each(result, function (index, item) {
+               // console.log("Item state : " + item)
+                $("#ddlstate").empty();
+                $("#ddlstate").append("<option>select</option>")
+                $("#ddlstate").append("<option value = " + item.id + ">" + item.stateName + "</option > ")
+            })
+        })
+    }
+    function GetCities(stateid) {
+        $.get('@Url.Action("GetCities", "Home")', { id: stateid }, function (result) {
+            $.each(result, function (index, item) {
+               console.log("Item city : " + item)
+                $("#ddlcity").empty();
+                $("#ddlcity").append("<option>select</option>")
+                $("#ddlcity").append("<option value = " + item.id + ">" + item.cityName + "</option > ")
+            })
+        })
+    }
+</script> 
+
